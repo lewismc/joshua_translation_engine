@@ -35,17 +35,17 @@ class Decoder(object):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect(('localhost', self.port))
 
-        tx_msg = input_text + u'\n'
+        tx_msg = input_text + '\n'
         sock.send(tx_msg.encode('utf8'))
 
         num_lines = len(input_text.split('\n'))
-        rx_msg = u''
+        rx_msg = ''
         for i in range(num_lines):
             rx_msg += sock.recv(1024).decode('utf8')
 
         return rx_msg
 
     def start_decoder_server(self):
-        runner_path = os.path.join(self.bundle_dir, 'run-joshua.sh')
+        runner_path = os.path.join(self.bundle_dir, 'joshua')
         options = ['-server-port', str(self.port)]
         subprocess.Popen([runner_path] + options, env=os.environ)

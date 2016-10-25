@@ -1,3 +1,4 @@
+import base64
 import os
 from subprocess import Popen, PIPE
 import sys
@@ -11,7 +12,6 @@ def _tokenize(lang_short_code, text):
     runner_path = os.path.join(
         os.environ['JOSHUA'],
         'scripts',
-        'preparation',
         'tokenize.pl'
     )
     options = ['-l', lang_short_code]
@@ -23,15 +23,14 @@ def _tokenize(lang_short_code, text):
         env=os.environ
     )
     out, err = p.communicate(text.encode('utf8'))
-    sys.stderr.write(err.encode('utf8') + '\n')
-    return unicode(out.strip(), encoding='utf8').split('\n')
+    sys.stderr.write(err.decode('utf8') + '\n')
+    return str(out.strip(), encoding='utf8').split('\n')
 
 
 def _detokenize(lang_short_code, text):
     runner_path = os.path.join(
         os.environ['JOSHUA'],
         'scripts',
-        'preparation',
         'detokenize.pl'
     )
     options = ['-l', lang_short_code]
@@ -43,8 +42,8 @@ def _detokenize(lang_short_code, text):
         env=os.environ
     )
     out, err = p.communicate(text.encode('utf8'))
-    sys.stderr.write(err.encode('utf8') + '\n')
-    return unicode(out.strip(), encoding='utf8')
+    sys.stderr.write(err.decode('utf8') + '\n')
+    return str(out.strip(), encoding='utf8')
 
 
 def tokenize(lang_short_code, sentences):
@@ -114,14 +113,14 @@ def merge_lines(translation):
         next_line = lines.pop(0)
         if prev_line == '':
             if next_line == '':
-                result += u'\n\n'
+                result += '\n\n'
             else:
                 result += next_line
         else:
             if next_line == '':
-                result += u'\n\n'
+                result += '\n\n'
             else:
-                result = u'{0} {1}'.format(result, next_line)
+                result = '{0} {1}'.format(result, next_line)
 
         prev_line = next_line
 
